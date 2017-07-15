@@ -1445,6 +1445,13 @@ struct FormatStyle {
   /// \endcode
   bool SpaceInEmptyParentheses;
 
+  /// \brief If ``true``, spaces may be inserted into ``{}``.
+  /// \code
+  ///    true:                  false:
+  ///    void f(int) {}   vs.   void f(int) { }
+  /// \endcode
+  bool SpaceInEmptyBraces;
+
   /// \brief The number of spaces before trailing line comments
   /// (``//`` - comments).
   ///
@@ -1613,6 +1620,7 @@ struct FormatStyle {
            SpaceBeforeAssignmentOperators == R.SpaceBeforeAssignmentOperators &&
            SpaceBeforeParens == R.SpaceBeforeParens &&
            SpaceInEmptyParentheses == R.SpaceInEmptyParentheses &&
+           SpaceInEmptyBraces == R.SpaceInEmptyBraces &&
            SpacesBeforeTrailingComments == R.SpacesBeforeTrailingComments &&
            SpacesInAngles == R.SpacesInAngles &&
            SpacesInContainerLiterals == R.SpacesInContainerLiterals &&

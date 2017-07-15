@@ -2170,6 +2170,8 @@ bool TokenAnnotator::spaceRequiredBetween(const AnnotatedLine &Line,
     return Right.is(tok::hash);
   if (Left.is(tok::l_paren) && Right.is(tok::r_paren))
     return Style.SpaceInEmptyParentheses;
+  if (Left.is(tok::l_brace) && Right.is(tok::r_brace))
+    return Style.SpaceInEmptyBraces;
   if (Left.is(tok::l_paren) || Right.is(tok::r_paren))
     return (Right.is(TT_CastRParen) ||
             (Left.MatchingParen && Left.MatchingParen->is(TT_CastRParen)))

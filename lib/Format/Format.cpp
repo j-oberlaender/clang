@@ -396,6 +396,7 @@ template <> struct MappingTraits<FormatStyle> {
                    Style.SpaceBeforeAssignmentOperators);
     IO.mapOptional("SpaceBeforeParens", Style.SpaceBeforeParens);
     IO.mapOptional("SpaceInEmptyParentheses", Style.SpaceInEmptyParentheses);
+    IO.mapOptional("SpaceInEmptyBraces", Style.SpaceInEmptyBraces);
     IO.mapOptional("SpacesBeforeTrailingComments",
                    Style.SpacesBeforeTrailingComments);
     IO.mapOptional("SpacesInAngles", Style.SpacesInAngles);
@@ -621,6 +622,7 @@ FormatStyle getLLVMStyle() {
   LLVMStyle.SpacesInParentheses = false;
   LLVMStyle.SpacesInSquareBrackets = false;
   LLVMStyle.SpaceInEmptyParentheses = false;
+  LLVMStyle.SpaceInEmptyBraces = false;
   LLVMStyle.SpacesInContainerLiterals = true;
   LLVMStyle.SpacesInCStyleCastParentheses = false;
   LLVMStyle.SpaceAfterCStyleCast = false;

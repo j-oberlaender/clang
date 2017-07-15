@@ -446,7 +446,7 @@ private:
         (Tok->getNextNonComment() == nullptr ||
          Tok->getNextNonComment()->is(tok::semi))) {
       // We merge empty blocks even if the line exceeds the column limit.
-      Tok->SpacesRequiredBefore = 0;
+      Tok->SpacesRequiredBefore = (Style.SpaceInEmptyBraces ? 1 : 0);
       Tok->CanBreakBefore = true;
       return 1;
     } else if (Limit != 0 && !Line.startsWith(tok::kw_namespace) &&
