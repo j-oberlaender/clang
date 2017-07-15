@@ -1735,6 +1735,9 @@ void UnwrappedLineParser::parseDoWhile() {
     return;
   }
 
+  if (Style.BraceWrapping.BeforeWhile)
+    addUnwrappedLine();
+
   nextToken();
   parseStructuralElement();
 }

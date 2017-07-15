@@ -704,6 +704,18 @@ struct FormatStyle {
     ///   }
     /// \endcode
     bool BeforeElse;
+    /// \brief Wrap before ``while`` of a ``do``-``while`` statement.
+    /// \code
+    ///   true:
+    ///   do {
+    ///   }
+    ///   while (foo());
+    ///
+    ///   false:
+    ///   do {
+    ///   } while (foo());
+    /// \endcode
+    bool BeforeWhile;
     /// \brief Indent the wrapped braces themselves.
     bool IndentBraces;
     /// \brief If ``false``, empty function body can be put on a single line.
