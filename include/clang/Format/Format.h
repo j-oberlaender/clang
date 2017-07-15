@@ -1036,6 +1036,42 @@ struct FormatStyle {
   /// \endcode
   bool IndentCaseLabels;
 
+  /// \brief Indent preprocessor directives.
+  ///
+  /// \code
+  ///   true (IndentWidth 2):
+  ///   #ifdef FOO
+  ///   #  if defined(BAR)
+  ///   #    define TEST bar
+  ///   #  elif defined(BAZ)
+  ///   #    define TEST baz
+  ///   #  endif
+  ///   #endif
+  ///   #ifndef XYZ
+  ///   #  define XYZ(x, y) \
+  ///       do              \
+  ///         x += y;       \
+  ///       } while (x < y)
+  ///   #endif
+  ///
+  ///   false:
+  ///   #ifdef FOO
+  ///   #if defined(BAR)
+  ///   #define TEST bar
+  ///   #elif defined(BAZ)
+  ///   #define TEST baz
+  ///   #endif
+  ///   #endif
+  ///   #ifndef XYZ
+  ///   #define XYZ(x, y) \
+  ///     do              \
+  ///       x += y;       \
+  ///     } while (x < y)
+  ///   #endif
+  /// \endcode
+  bool IndentPreprocessorDirectives;
+
+
   /// \brief The number of columns to use for indentation.
   /// \code
   ///    IndentWidth: 3
@@ -1526,6 +1562,7 @@ struct FormatStyle {
            ForEachMacros == R.ForEachMacros &&
            IncludeCategories == R.IncludeCategories &&
            IndentCaseLabels == R.IndentCaseLabels &&
+           IndentPreprocessorDirectives == R.IndentPreprocessorDirectives &&
            IndentWidth == R.IndentWidth && Language == R.Language &&
            IndentWrappedFunctionNames == R.IndentWrappedFunctionNames &&
            JavaScriptQuotes == R.JavaScriptQuotes &&

@@ -652,6 +652,7 @@ void UnwrappedLineParser::conditionalCompilationEnd() {
 }
 
 void UnwrappedLineParser::parsePPIf(bool IfDef) {
+  Line->HasPPConditional = true;
   bool IfNDef = FormatTok->is(tok::pp_ifndef);
   nextToken();
   bool Unreachable = false;
@@ -664,6 +665,7 @@ void UnwrappedLineParser::parsePPIf(bool IfDef) {
 }
 
 void UnwrappedLineParser::parsePPElse() {
+  Line->HasPPConditional = true;
   conditionalCompilationAlternative();
   parsePPUnknown();
 }
@@ -671,6 +673,7 @@ void UnwrappedLineParser::parsePPElse() {
 void UnwrappedLineParser::parsePPElIf() { parsePPElse(); }
 
 void UnwrappedLineParser::parsePPEndIf() {
+  Line->HasPPConditional = false;
   conditionalCompilationEnd();
   parsePPUnknown();
 }
@@ -2136,12 +2139,24 @@ LLVM_ATTRIBUTE_UNUSED static void printDebugInfo(const UnwrappedLine &Line,
 void UnwrappedLineParser::addUnwrappedLine() {
   if (Line->Tokens.empty())
     return;
+  auto OriginalLineLevel = Line->Level;
+  if (Line->InPPDirective) {
+    if (Style.IndentPreprocessorDirectives) {
+      // We assume that the outermost #if... is always an include guard.
+      Line->Level += (PPBranchLevel >= 0) ? PPBranchLevel : 0;
+      // Undo one indent level if the line contains an opening conditional.
+      if (Line->HasPPConditional && Line->Level > 0)
+        --Line->Level;
+    }
+  }
   DEBUG({
     if (CurrentLines == &Lines)
       printDebugInfo(*Line);
   });
   CurrentLines->push_back(std::move(*Line));
   Line->Tokens.clear();
+  Line->Level = OriginalLineLevel;
+  Line->HasPPConditional = false;
   Line->MatchingOpeningBlockLineIndex = UnwrappedLine::kInvalidIndex;
   if (CurrentLines == &Lines && !PreprocessorDirectives.empty()) {
     CurrentLines->append(

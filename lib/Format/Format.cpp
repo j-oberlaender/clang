@@ -350,6 +350,7 @@ template <> struct MappingTraits<FormatStyle> {
     IO.mapOptional("IncludeCategories", Style.IncludeCategories);
     IO.mapOptional("IncludeIsMainRegex", Style.IncludeIsMainRegex);
     IO.mapOptional("IndentCaseLabels", Style.IndentCaseLabels);
+    IO.mapOptional("IndentPreprocessorDirectives", Style.IndentPreprocessorDirectives);
     IO.mapOptional("IndentWidth", Style.IndentWidth);
     IO.mapOptional("IndentWrappedFunctionNames",
                    Style.IndentWrappedFunctionNames);
@@ -590,6 +591,7 @@ FormatStyle getLLVMStyle() {
                                  {".*", 1}};
   LLVMStyle.IncludeIsMainRegex = "(Test)?$";
   LLVMStyle.IndentCaseLabels = false;
+  LLVMStyle.IndentPreprocessorDirectives = false;
   LLVMStyle.IndentWrappedFunctionNames = false;
   LLVMStyle.IndentWidth = 2;
   LLVMStyle.JavaScriptQuotes = FormatStyle::JSQS_Leave;

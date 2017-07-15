@@ -47,6 +47,10 @@ struct UnwrappedLine {
   /// \brief Whether this \c UnwrappedLine is part of a preprocessor directive.
   bool InPPDirective;
 
+  /// \brief Whether this \c UnwrappedLine is part of a preprocessor directive
+  /// AND begins with an opening conditional (if, ifdef, ifndef, elif, else).
+  bool HasPPConditional;
+
   bool MustBeDeclaration;
 
   /// \brief If this \c UnwrappedLine closes a block in a sequence of lines,
