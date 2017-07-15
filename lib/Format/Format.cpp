@@ -205,6 +205,14 @@ template <> struct ScalarEnumerationTraits<FormatStyle::PointerAlignmentStyle> {
   }
 };
 
+template <> struct ScalarEnumerationTraits<FormatStyle::ReferenceAlignmentStyle> {
+  static void enumeration(IO &IO, FormatStyle::ReferenceAlignmentStyle &Value) {
+    IO.enumCase(Value, "Middle", FormatStyle::RAS_Middle);
+    IO.enumCase(Value, "Left", FormatStyle::RAS_Left);
+    IO.enumCase(Value, "Right", FormatStyle::RAS_Right);
+  }
+};
+
 template <>
 struct ScalarEnumerationTraits<FormatStyle::SpaceBeforeParensOptions> {
   static void enumeration(IO &IO,
@@ -378,6 +386,7 @@ template <> struct MappingTraits<FormatStyle> {
     IO.mapOptional("PenaltyReturnTypeOnItsOwnLine",
                    Style.PenaltyReturnTypeOnItsOwnLine);
     IO.mapOptional("PointerAlignment", Style.PointerAlignment);
+    IO.mapOptional("ReferenceAlignment", Style.ReferenceAlignment);
     IO.mapOptional("ReflowComments", Style.ReflowComments);
     IO.mapOptional("SortIncludes", Style.SortIncludes);
     IO.mapOptional("SortUsingDeclarations", Style.SortUsingDeclarations);
@@ -604,6 +613,7 @@ FormatStyle getLLVMStyle() {
   LLVMStyle.ObjCSpaceAfterProperty = false;
   LLVMStyle.ObjCSpaceBeforeProtocolList = true;
   LLVMStyle.PointerAlignment = FormatStyle::PAS_Right;
+  LLVMStyle.ReferenceAlignment = FormatStyle::RAS_Right;
   LLVMStyle.SpacesBeforeTrailingComments = 1;
   LLVMStyle.Standard = FormatStyle::LS_Cpp11;
   LLVMStyle.UseTab = FormatStyle::UT_Never;
@@ -659,6 +669,7 @@ FormatStyle getGoogleStyle(FormatStyle::LanguageKind Language) {
   GoogleStyle.ObjCSpaceAfterProperty = false;
   GoogleStyle.ObjCSpaceBeforeProtocolList = false;
   GoogleStyle.PointerAlignment = FormatStyle::PAS_Left;
+  GoogleStyle.ReferenceAlignment = FormatStyle::RAS_Left;
   GoogleStyle.SpacesBeforeTrailingComments = 2;
   GoogleStyle.Standard = FormatStyle::LS_Auto;
 
@@ -747,6 +758,7 @@ FormatStyle getMozillaStyle() {
   MozillaStyle.ObjCSpaceBeforeProtocolList = false;
   MozillaStyle.PenaltyReturnTypeOnItsOwnLine = 200;
   MozillaStyle.PointerAlignment = FormatStyle::PAS_Left;
+  MozillaStyle.ReferenceAlignment = FormatStyle::RAS_Left;
   MozillaStyle.SpaceAfterTemplateKeyword = false;
   return MozillaStyle;
 }
@@ -768,6 +780,7 @@ FormatStyle getWebKitStyle() {
   Style.ObjCBlockIndentWidth = 4;
   Style.ObjCSpaceAfterProperty = true;
   Style.PointerAlignment = FormatStyle::PAS_Left;
+  Style.ReferenceAlignment = FormatStyle::RAS_Left;
   return Style;
 }
 
@@ -1060,10 +1073,14 @@ private:
         Tok = Tok->Next;
       }
     }
-    if (Style.DerivePointerAlignment)
+    if (Style.DerivePointerAlignment) {
       Style.PointerAlignment = countVariableAlignments(AnnotatedLines) <= 0
                                    ? FormatStyle::PAS_Left
                                    : FormatStyle::PAS_Right;
+      Style.ReferenceAlignment = countVariableAlignments(AnnotatedLines) <= 0
+                                   ? FormatStyle::RAS_Left
+                                   : FormatStyle::RAS_Right;
+    }
     if (Style.Standard == FormatStyle::LS_Auto)
       Style.Standard = hasCpp03IncompatibleFormat(AnnotatedLines)
                            ? FormatStyle::LS_Cpp11

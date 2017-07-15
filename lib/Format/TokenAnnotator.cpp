@@ -2205,13 +2205,15 @@ bool TokenAnnotator::spaceRequiredBetween(const AnnotatedLine &Line,
            (Left.Tok.isLiteral() || (Left.is(tok::kw_const) && Left.Previous &&
                                      Left.Previous->is(tok::r_paren)) ||
             (!Left.isOneOf(TT_PointerOrReference, tok::l_paren) &&
-             (Style.PointerAlignment != FormatStyle::PAS_Left ||
-              (Line.IsMultiVariableDeclStmt &&
+             ((Right.is(tok::star) && Style.PointerAlignment != FormatStyle::PAS_Left) ||
+              (Right.isOneOf(tok::amp, tok::ampamp) && Style.ReferenceAlignment != FormatStyle::RAS_Left) ||
+              ((Right.is(tok::star) && Line.IsMultiVariableDeclStmt) &&
                (Left.NestingLevel == 0 ||
                 (Left.NestingLevel == 1 && Line.First->is(tok::kw_for)))))));
   if (Right.is(TT_FunctionTypeLParen) && Left.isNot(tok::l_paren) &&
       (!Left.is(TT_PointerOrReference) ||
-       (Style.PointerAlignment != FormatStyle::PAS_Right &&
+       (((Left.is(tok::star) && Style.PointerAlignment != FormatStyle::PAS_Right) ||
+         (Left.isOneOf(tok::amp, tok::ampamp) && Style.ReferenceAlignment != FormatStyle::RAS_Right)) &&
         !Line.IsMultiVariableDeclStmt)))
     return true;
   if (Left.is(TT_PointerOrReference))
@@ -2221,8 +2223,9 @@ bool TokenAnnotator::spaceRequiredBetween(const AnnotatedLine &Line,
            (Right.is(tok::l_brace) && Right.BlockKind == BK_Block) ||
            (!Right.isOneOf(TT_PointerOrReference, TT_ArraySubscriptLSquare,
                            tok::l_paren) &&
-            (Style.PointerAlignment != FormatStyle::PAS_Right &&
-             !Line.IsMultiVariableDeclStmt) &&
+            (((Left.is(tok::star) && Style.PointerAlignment != FormatStyle::PAS_Right) ||
+              (Left.isOneOf(tok::amp, tok::ampamp) && Style.ReferenceAlignment != FormatStyle::RAS_Right)) &&
+             !(Left.is(tok::star) && Line.IsMultiVariableDeclStmt)) &&
             Left.Previous &&
             !Left.Previous->isOneOf(tok::l_paren, tok::coloncolon));
   if (Right.is(tok::star) && Left.is(tok::l_paren))
@@ -2685,8 +2688,9 @@ bool TokenAnnotator::canBreakBefore(const AnnotatedLine &Line,
   if (Left.isOneOf(TT_JavaAnnotation, TT_LeadingJavaAnnotation))
     return !Right.is(tok::l_paren);
   if (Right.is(TT_PointerOrReference))
-    return Line.IsMultiVariableDeclStmt ||
-           (Style.PointerAlignment == FormatStyle::PAS_Right &&
+    return (Right.is(tok::star) && Line.IsMultiVariableDeclStmt) ||
+           (((Right.is(tok::star) && Style.PointerAlignment == FormatStyle::PAS_Right) ||
+             (Right.isOneOf(tok::amp, tok::ampamp) && Style.ReferenceAlignment == FormatStyle::RAS_Right)) &&
             (!Right.Next || Right.Next->isNot(TT_FunctionDeclarationName)));
   if (Right.isOneOf(TT_StartOfName, TT_FunctionDeclarationName) ||
       Right.is(tok::kw_operator))

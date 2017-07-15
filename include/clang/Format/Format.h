@@ -1299,7 +1299,7 @@ struct FormatStyle {
   /// line.
   unsigned PenaltyReturnTypeOnItsOwnLine;
 
-  /// \brief The ``&`` and ``*`` alignment style.
+  /// \brief The ``*`` alignment style.
   enum PointerAlignmentStyle {
     /// Align pointer to the left.
     /// \code
@@ -1318,8 +1318,30 @@ struct FormatStyle {
     PAS_Middle
   };
 
-  /// \brief Pointer and reference alignment style.
+  /// \brief Pointer alignment style.
   PointerAlignmentStyle PointerAlignment;
+
+  /// \brief The ``&`` alignment style.
+  enum ReferenceAlignmentStyle {
+    /// Align reference to the left.
+    /// \code
+    ///   int& a;
+    /// \endcode
+    RAS_Left,
+    /// Align reference to the right.
+    /// \code
+    ///   int &a;
+    /// \endcode
+    RAS_Right,
+    /// Align reference in the middle.
+    /// \code
+    ///   int & a;
+    /// \endcode
+    RAS_Middle
+  };
+
+  /// \brief Reference alignment style.
+  ReferenceAlignmentStyle ReferenceAlignment;
 
   /// \brief If ``true``, clang-format will attempt to re-flow comments.
   /// \code
