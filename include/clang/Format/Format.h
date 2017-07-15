@@ -1057,6 +1057,64 @@ struct FormatStyle {
   /// \endcode
   bool IndentCaseLabels;
 
+  /// \brief Different ways to indent preprocessor directives.
+  enum PreprocessorIndentationKind {
+    /// Don't indent preprocessor directives.
+    /// \code
+    ///   #ifdef FOO
+    ///   #if defined(BAR)
+    ///   #define TEST bar
+    ///   #elif defined(BAZ)
+    ///   #define TEST baz
+    ///   #endif
+    ///   #endif
+    ///   #ifndef XYZ
+    ///   #define XYZ(x, y) \
+    ///     do              \
+    ///       x += y;       \
+    ///     } while (x < y)
+    ///   #endif
+    /// \endcode
+    PI_None,
+    /// Indent, but leave hash (``#``) in the left-most column.
+    /// \code
+    ///   #ifdef FOO
+    ///   #  if defined(BAR)
+    ///   #    define TEST bar
+    ///   #  elif defined(BAZ)
+    ///   #    define TEST baz
+    ///   #  endif
+    ///   #endif
+    ///   #ifndef XYZ
+    ///   #  define XYZ(x, y) \
+    ///       do              \
+    ///         x += y;       \
+    ///       } while (x < y)
+    ///   #endif
+    /// \endcode
+    PI_IndentAfterHash,
+    /// Indent including the hash.
+    /// \code
+    ///   #ifdef FOO
+    ///     #if defined(BAR)
+    ///       #define TEST bar
+    ///     #elif defined(BAZ)
+    ///       #define TEST baz
+    ///     #endif
+    ///   #endif
+    ///   #ifndef XYZ
+    ///     #define XYZ(x, y) \
+    ///       do              \
+    ///         x += y;       \
+    ///       } while (x < y)
+    ///   #endif
+    /// \endcode
+    PI_Indent
+  };
+
+  /// \brief Indent preprocessor directives.
+  PreprocessorIndentationKind PreprocessorIndentation;
+
   /// \brief Indent preprocessor directives.
   ///
   /// \code
@@ -1640,7 +1698,7 @@ struct FormatStyle {
            ForEachMacros == R.ForEachMacros &&
            IncludeCategories == R.IncludeCategories &&
            IndentCaseLabels == R.IndentCaseLabels &&
-           IndentPreprocessorDirectives == R.IndentPreprocessorDirectives &&
+           PreprocessorIndentation == R.PreprocessorIndentation &&
            IndentWidth == R.IndentWidth && Language == R.Language &&
            IndentWrappedFunctionNames == R.IndentWrappedFunctionNames &&
            JavaScriptQuotes == R.JavaScriptQuotes &&

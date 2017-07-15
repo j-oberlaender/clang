@@ -375,9 +375,13 @@ void ContinuationIndenter::addTokenOnCurrentLine(LineState &State, bool DryRun,
   }
 
   unsigned Spaces = Current.SpacesRequiredBefore + ExtraSpaces;
+  unsigned WhitespaceSpaces = Spaces;
+  if (Style.PreprocessorIndentation == FormatStyle::PI_IndentAfterHash &&
+      State.Line->First->is(tok::hash) && Current.Previous->is(tok::hash))
+    WhitespaceSpaces += State.FirstIndent;
 
   if (!DryRun)
-    Whitespaces.replaceWhitespace(Current, /*Newlines=*/0, Spaces,
+    Whitespaces.replaceWhitespace(Current, /*Newlines=*/0, WhitespaceSpaces,
                                   State.Column + Spaces);
 
   // If "BreakBeforeInheritanceComma" mode, don't break within the inheritance

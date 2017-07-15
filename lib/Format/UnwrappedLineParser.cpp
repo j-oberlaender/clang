@@ -2141,7 +2141,7 @@ void UnwrappedLineParser::addUnwrappedLine() {
     return;
   auto OriginalLineLevel = Line->Level;
   if (Line->InPPDirective) {
-    if (Style.IndentPreprocessorDirectives) {
+    if (Style.PreprocessorIndentation != FormatStyle::PI_None) {
       // We assume that the outermost #if... is always an include guard.
       Line->Level += (PPBranchLevel >= 0) ? PPBranchLevel : 0;
       // Undo one indent level if the line contains an opening conditional.

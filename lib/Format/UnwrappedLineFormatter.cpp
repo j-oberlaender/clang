@@ -1018,6 +1018,14 @@ void UnwrappedLineFormatter::formatFirstToken(const AnnotatedLine &Line,
   if (RootToken.IsFirst && !RootToken.HasUnescapedNewline)
     Newlines = 0;
 
+  // Place preprocessor hash tokens at the line start if desired.
+  if (Style.PreprocessorIndentation == FormatStyle::PI_IndentAfterHash &&
+      RootToken.is(tok::hash))
+  {
+    // A preprocessor's hash should always be at the beginning
+    Indent = 0;
+  }
+
   // Remove empty lines after "{".
   if (!Style.KeepEmptyLinesAtTheStartOfBlocks && PreviousLine &&
       PreviousLine->Last->is(tok::l_brace) &&
