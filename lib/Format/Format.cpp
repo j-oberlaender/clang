@@ -406,6 +406,8 @@ template <> struct MappingTraits<FormatStyle> {
                    Style.SpacesInCStyleCastParentheses);
     IO.mapOptional("SpacesInParentheses", Style.SpacesInParentheses);
     IO.mapOptional("SpacesInSquareBrackets", Style.SpacesInSquareBrackets);
+    IO.mapOptional("SpaceAfterOperatorKeyword", Style.SpaceAfterOperatorKeyword);
+    IO.mapOptional("SpaceAfterOverloadedOperator", Style.SpaceAfterOverloadedOperator);
     IO.mapOptional("Standard", Style.Standard);
     IO.mapOptional("TabWidth", Style.TabWidth);
     IO.mapOptional("UseTab", Style.UseTab);
@@ -621,6 +623,8 @@ FormatStyle getLLVMStyle() {
   LLVMStyle.ReflowComments = true;
   LLVMStyle.SpacesInParentheses = false;
   LLVMStyle.SpacesInSquareBrackets = false;
+  LLVMStyle.SpaceAfterOperatorKeyword = false;
+  LLVMStyle.SpaceAfterOverloadedOperator = false;
   LLVMStyle.SpaceInEmptyParentheses = false;
   LLVMStyle.SpaceInEmptyBraces = false;
   LLVMStyle.SpacesInContainerLiterals = true;

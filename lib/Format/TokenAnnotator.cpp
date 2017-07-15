@@ -2305,7 +2305,29 @@ bool TokenAnnotator::spaceRequiredBefore(const AnnotatedLine &Line,
     return true; // Never ever merge two identifiers.
   if (Style.isCpp()) {
     if (Left.is(tok::kw_operator))
-      return Right.is(tok::coloncolon);
+      return (Right.is(tok::coloncolon) || Style.SpaceAfterOperatorKeyword);
+    else if (Right.is(tok::l_paren) && Left.Previous && Style.SpaceAfterOverloadedOperator)
+    {
+      // operator OP (
+      if (Left.Previous->is(tok::kw_operator))
+        return true;
+      // operator () (
+      if (Left.is(tok::r_paren)
+          && Left.Previous->is(tok::l_paren)
+          && Left.Previous->Previous && Left.Previous->Previous->is(tok::kw_operator))
+        return true;
+      // operator [] (
+      if (Left.is(tok::r_square)
+          && Left.Previous->is(tok::l_square)
+          && Left.Previous->Previous &&
+          (Left.Previous->Previous->is(tok::kw_operator) ||
+           // operator new[] (
+           // operator delete[] (
+           (Left.Previous->Previous->isOneOf(tok::kw_new, tok::kw_delete) &&
+            Left.Previous->Previous->Previous &&
+            Left.Previous->Previous->Previous->is(tok::kw_operator))))
+        return true;
+    }
   } else if (Style.Language == FormatStyle::LK_Proto ||
              Style.Language == FormatStyle::LK_TextProto) {
     if (Right.is(tok::period) &&

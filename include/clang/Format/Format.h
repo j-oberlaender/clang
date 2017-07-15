@@ -1509,6 +1509,33 @@ struct FormatStyle {
   /// \endcode
   bool SpacesInSquareBrackets;
 
+  /// \brief If ``true``, spaces will be inserted after the ``operator`` keyword.
+  /// \code
+  ///    true:
+  ///    bool operator <(const Foo& lhs, const Foo& rhs);
+  ///    bool operator [](std::size_t i);
+  ///
+  ///    false:
+  ///    bool operator<(const Foo& lhs, const Foo& rhs);
+  ///    bool operator [] (std::size_t i);
+  /// \endcode
+  bool SpaceAfterOperatorKeyword;
+
+  /// \brief If ``true``, spaces will be inserted after the operator following
+  /// an ``operator`` keyword.
+  /// \code
+  ///    true:
+  ///    bool operator< (const Foo& lhs, const Foo& rhs);
+  ///    bool operator[] (std::size_t i);
+  ///    bool operator new (std::size_t size) throw (std::bad_alloc);
+  ///
+  ///    false:
+  ///    bool operator<(const Foo& lhs, const Foo& rhs);
+  ///    bool operator[](std::size_t i);
+  ///    bool operator new(std::size_t size) throw (std::bad_alloc);
+  /// \endcode
+  bool SpaceAfterOverloadedOperator;
+
   /// \brief Supported language standards.
   enum LanguageStandard {
     /// Use C++03-compatible syntax.
