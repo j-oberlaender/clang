@@ -827,8 +827,12 @@ unsigned ContinuationIndenter::moveStateToNextToken(LineState &State,
   if (Current.is(TT_InheritanceColon))
     State.Stack.back().AvoidBinPacking = true;
   if (Current.is(tok::lessless) && Current.isNot(TT_OverloadedOperator)) {
-    if (State.Stack.back().FirstLessLess == 0)
-      State.Stack.back().FirstLessLess = State.Column;
+    if (State.Stack.back().FirstLessLess == 0) {
+      if (!Style.AlignLessLessInsideParens && State.Stack.size() > 2)
+        State.Stack.back().FirstLessLess = State.Stack.at(State.Stack.size()-2).Indent;
+      else
+        State.Stack.back().FirstLessLess = State.Column;
+    }
     else
       State.Stack.back().LastOperatorWrapped = Newline;
   }

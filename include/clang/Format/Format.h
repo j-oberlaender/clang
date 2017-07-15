@@ -151,6 +151,27 @@ struct FormatStyle {
   /// \endcode
   bool AlignTrailingComments;
 
+  /// \brief If ``false``, do not align ``<<`` operators when they appear inside
+  /// parentheses (such as for function call parameters).
+  /// \code
+  ///   true:
+  ///   std::cout << "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  ///             << "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  ///             << "cccccccccccccccccccccccccccccccccccccccc";
+  ///   foo(std::cout << "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  ///       << "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  ///       << "cccccccccccccccccccccccccccccccccccccccc");
+  ///
+  ///   false:
+  ///   std::cout << "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  ///             << "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  ///             << "cccccccccccccccccccccccccccccccccccccccc";
+  ///   foo(std::cout << "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  ///                 << "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  ///                 << "cccccccccccccccccccccccccccccccccccccccc");
+  /// \endcode
+  bool AlignLessLessInsideParens;
+
   /// \brief Allow putting all parameters of a function declaration onto
   /// the next line even if ``BinPackParameters`` is ``false``.
   /// \code
@@ -1578,6 +1599,7 @@ struct FormatStyle {
            AlignEscapedNewlines == R.AlignEscapedNewlines &&
            AlignOperands == R.AlignOperands &&
            AlignTrailingComments == R.AlignTrailingComments &&
+           AlignLessLessInsideParens == R.AlignLessLessInsideParens &&
            AllowAllParametersOfDeclarationOnNextLine ==
                R.AllowAllParametersOfDeclarationOnNextLine &&
            AllowShortBlocksOnASingleLine == R.AllowShortBlocksOnASingleLine &&
