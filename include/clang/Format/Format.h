@@ -1524,7 +1524,6 @@ struct FormatStyle {
   /// \endcode
   bool SpaceInEmptyParentheses;
 
-
   /// \brief Different ways to put a space inside empty braces.
   enum SpaceInEmptyBracesOptions {
     /// Never put a space in empty braces.
