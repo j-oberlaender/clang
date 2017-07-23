@@ -742,9 +742,12 @@ unsigned ContinuationIndenter::getNewLineColumn(const LineState &State) {
     return State.StartOfStringLiteral - 1;
   if (NextNonComment->isStringLiteral() && State.StartOfStringLiteral != 0)
     return State.StartOfStringLiteral;
-  if (NextNonComment->is(tok::lessless) &&
-      State.Stack.back().FirstLessLess != 0)
-    return State.Stack.back().FirstLessLess;
+  if (NextNonComment->is(tok::lessless)) {
+    if (State.Stack.back().FirstLessLess != 0)
+      return State.Stack.back().FirstLessLess;
+    if (!Style.AlignLessLessInsideParens && State.Stack.size() > 2)
+      return State.Stack.at(State.Stack.size()-2).Indent;
+  }
   if (NextNonComment->isMemberAccess()) {
     if (State.Stack.back().CallContinuation == 0)
       return ContinuationIndent;
