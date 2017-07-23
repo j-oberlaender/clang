@@ -2170,8 +2170,14 @@ bool TokenAnnotator::spaceRequiredBetween(const AnnotatedLine &Line,
     return Right.is(tok::hash);
   if (Left.is(tok::l_paren) && Right.is(tok::r_paren))
     return Style.SpaceInEmptyParentheses;
-  if (Left.is(tok::l_brace) && Right.is(tok::r_brace))
-    return Style.SpaceInEmptyBraces;
+  if (Left.is(tok::l_brace) && Right.is(tok::r_brace)) {
+    if (Left.BlockKind == BK_Block)
+      return (Style.SpaceInEmptyBraces == FormatStyle::SEBO_Blocks ||
+              Style.SpaceInEmptyBraces == FormatStyle::SEBO_All);
+    else if (Left.BlockKind == BK_BracedInit)
+      return (Style.SpaceInEmptyBraces == FormatStyle::SEBO_Initializers ||
+              Style.SpaceInEmptyBraces == FormatStyle::SEBO_All);
+  }
   if (Left.is(tok::l_paren) || Right.is(tok::r_paren))
     return (Right.is(TT_CastRParen) ||
             (Left.MatchingParen && Left.MatchingParen->is(TT_CastRParen)))

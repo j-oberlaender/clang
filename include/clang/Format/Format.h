@@ -1524,12 +1524,49 @@ struct FormatStyle {
   /// \endcode
   bool SpaceInEmptyParentheses;
 
-  /// \brief If ``true``, spaces may be inserted into ``{}``.
-  /// \code
-  ///    true:                  false:
-  ///    void f(int) {}   vs.   void f(int) { }
-  /// \endcode
-  bool SpaceInEmptyBraces;
+
+  /// \brief Different ways to put a space inside empty braces.
+  enum SpaceInEmptyBracesOptions {
+    /// Never put a space in empty braces.
+    /// \code
+    ///    void f() {}
+    ///    void g() {
+    ///      std::vector<int> v = {};
+    ///    }
+    ///    Foo::Foo() : member{} {}
+    /// \endcode
+    SEBO_Never,
+    /// Put a space in empty blocks, but not in empty braced initializers.
+    /// \code
+    ///    void f() { }
+    ///    void g() {
+    ///      std::vector<int> v = {};
+    ///    }
+    ///    Foo::Foo() : member{} { }
+    /// \endcode
+    SEBO_Blocks,
+    /// Put a space in empty braced initializers, but not in empty blocks.
+    /// \code
+    ///    void f() {}
+    ///    void g() {
+    ///      std::vector<int> v = { };
+    ///    }
+    ///    Foo::Foo() : member{ } {}
+    /// \endcode
+    SEBO_Initializers,
+    /// Put a space between all empty braces.
+    /// \code
+    ///    void f() { }
+    ///    void g() {
+    ///      std::vector<int> v = { };
+    ///    }
+    ///    Foo::Foo() : member{ } { }
+    /// \endcode
+    SEBO_All,
+  };
+
+  /// \brief Defines in which cases to put a space inside empty braces.
+  SpaceInEmptyBracesOptions SpaceInEmptyBraces;
 
   /// \brief The number of spaces before trailing line comments
   /// (``//`` - comments).

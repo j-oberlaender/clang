@@ -238,6 +238,21 @@ struct ScalarEnumerationTraits<FormatStyle::SpaceBeforeParensOptions> {
   }
 };
 
+template <>
+struct ScalarEnumerationTraits<FormatStyle::SpaceInEmptyBracesOptions> {
+  static void enumeration(IO &IO,
+                          FormatStyle::SpaceInEmptyBracesOptions &Value) {
+    IO.enumCase(Value, "Never", FormatStyle::SEBO_Never);
+    IO.enumCase(Value, "Blocks", FormatStyle::SEBO_Blocks);
+    IO.enumCase(Value, "Initializers", FormatStyle::SEBO_Initializers);
+    IO.enumCase(Value, "All", FormatStyle::SEBO_All);
+
+    // For backward compatibility.
+    IO.enumCase(Value, "false", FormatStyle::SEBO_Never);
+    IO.enumCase(Value, "true", FormatStyle::SEBO_All);
+  }
+};
+
 template <> struct MappingTraits<FormatStyle> {
   static void mapping(IO &IO, FormatStyle &Style) {
     // When reading, read the language first, we need it for getPredefinedStyle.
@@ -638,7 +653,7 @@ FormatStyle getLLVMStyle() {
   LLVMStyle.SpaceAfterOperatorKeyword = false;
   LLVMStyle.SpaceAfterOverloadedOperator = false;
   LLVMStyle.SpaceInEmptyParentheses = false;
-  LLVMStyle.SpaceInEmptyBraces = false;
+  LLVMStyle.SpaceInEmptyBraces = FormatStyle::SEBO_Never;
   LLVMStyle.SpacesInContainerLiterals = true;
   LLVMStyle.SpacesInCStyleCastParentheses = false;
   LLVMStyle.SpaceAfterCStyleCast = false;
