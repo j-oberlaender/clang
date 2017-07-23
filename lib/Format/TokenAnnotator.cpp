@@ -2316,6 +2316,11 @@ bool TokenAnnotator::spaceRequiredBefore(const AnnotatedLine &Line,
           && Left.Previous->is(tok::l_paren)
           && Left.Previous->Previous && Left.Previous->Previous->is(tok::kw_operator))
         return true;
+      // operator >> (  seems to be two tok::greater tokens.
+      if (Left.is(tok::greater)
+          && Left.Previous->is(tok::greater)
+          && Left.Previous->Previous && Left.Previous->Previous->is(tok::kw_operator))
+        return true;
       // operator [] (
       if (Left.is(tok::r_square)
           && Left.Previous->is(tok::l_square)
