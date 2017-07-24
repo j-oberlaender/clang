@@ -1288,6 +1288,37 @@ struct FormatStyle {
   /// \brief A regular expression matching macros that end a block.
   std::string MacroBlockEnd;
 
+  /// \brief A regular expression matching identifiers which should definitely
+  /// be interpreted as variables.
+  ///
+  /// When a data type has overloaded the &, && or * operators, they may need to
+  /// be interpreted as binary operators and not as pointers/references.  Since
+  /// clang-format does not have enough information to interpret the operators
+  /// correctly, this regex can define identifiers which shall be interpreted as
+  /// identifiers so that the operator following them is always seen as a binary
+  /// operator.  A common use case is for boost::serialization functionality:
+  ///
+  /// \code
+  ///    // With "^ar$":
+  ///    template <class Archive>
+  ///    void serialize(Archive& ar, const unsigned int version)
+  ///    {
+  ///      using boost::serialization::make_nvp;
+  ///      ar & make_nvp("foo", foo); // '&' is a binary operator, not a reference
+  ///      ar & make_nvp("bar", bar);
+  ///    }
+  ///
+  ///    // With "":
+  ///    template <class Archive>
+  ///    void serialize(Archive& ar, const unsigned int version)
+  ///    {
+  ///      using boost::serialization::make_nvp;
+  ///      ar &make_nvp("foo", foo); // '&' is classified as a reference
+  ///      ar &make_nvp("bar", bar);
+  ///    }
+  /// \endcode
+  std::string VariableNames;
+
   /// \brief The maximum number of consecutive empty lines to keep.
   /// \code
   ///    MaxEmptyLinesToKeep: 1         vs.     MaxEmptyLinesToKeep: 0
@@ -1743,6 +1774,7 @@ struct FormatStyle {
                R.KeepEmptyLinesAtTheStartOfBlocks &&
            MacroBlockBegin == R.MacroBlockBegin &&
            MacroBlockEnd == R.MacroBlockEnd &&
+           VariableNames == R.VariableNames &&
            MaxEmptyLinesToKeep == R.MaxEmptyLinesToKeep &&
            NamespaceIndentation == R.NamespaceIndentation &&
            ObjCBlockIndentWidth == R.ObjCBlockIndentWidth &&

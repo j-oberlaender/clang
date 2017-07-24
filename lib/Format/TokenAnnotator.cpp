@@ -35,7 +35,7 @@ public:
   AnnotatingParser(const FormatStyle &Style, AnnotatedLine &Line,
                    const AdditionalKeywords &Keywords)
       : Style(Style), Line(Line), CurrentToken(Line.First), AutoFound(false),
-        Keywords(Keywords) {
+        Keywords(Keywords), VariableNamesRegex(Style.VariableNames) {
     Contexts.push_back(Context(tok::unknown, 1, /*IsExpression=*/false));
     resetTokenMetadata(CurrentToken);
   }
@@ -1428,6 +1428,9 @@ private:
     if (IsExpression && !Contexts.back().CaretFound)
       return TT_BinaryOperator;
 
+    if (PrevToken->is(tok::identifier) && VariableNamesRegex.match(PrevToken->TokenText))
+      return TT_BinaryOperator;
+
     return TT_PointerOrReference;
   }
 
@@ -1480,6 +1483,8 @@ private:
   // same decision irrespective of the decisions for tokens leading up to it.
   // Store this information to prevent this from causing exponential runtime.
   llvm::SmallPtrSet<FormatToken *, 16> NonTemplateLess;
+
+  llvm::Regex VariableNamesRegex;
 };
 
 static const int PrecedenceUnaryOperator = prec::PointerToMember + 1;

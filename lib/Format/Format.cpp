@@ -394,6 +394,7 @@ template <> struct MappingTraits<FormatStyle> {
                    Style.KeepEmptyLinesAtTheStartOfBlocks);
     IO.mapOptional("MacroBlockBegin", Style.MacroBlockBegin);
     IO.mapOptional("MacroBlockEnd", Style.MacroBlockEnd);
+    IO.mapOptional("VariableNames", Style.VariableNames);
     IO.mapOptional("MaxEmptyLinesToKeep", Style.MaxEmptyLinesToKeep);
     IO.mapOptional("NamespaceIndentation", Style.NamespaceIndentation);
     IO.mapOptional("ObjCBlockIndentWidth", Style.ObjCBlockIndentWidth);
