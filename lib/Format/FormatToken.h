@@ -272,6 +272,13 @@ struct FormatToken {
   /// Only set to true if \c Type == \c TT_LineComment.
   bool ContinuesLineCommentSection = false;
 
+  /// \brief If this token is an opening parenthesis that directly follows a
+  /// closing parenthesis, counts the number of such pairs encountered.
+  ///
+  /// For expressions like foo()(bar, baz)(xyzzy, fnord)... this information
+  /// allows for different formatting styles.
+  unsigned ChainedParenCount = 0;
+
   /// \brief If this is a bracket, this points to the matching one.
   FormatToken *MatchingParen = nullptr;
 

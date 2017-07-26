@@ -124,6 +124,19 @@ private:
       return false;
     FormatToken *Left = CurrentToken->Previous;
     Left->ParentBracket = Contexts.back().ContextKind;
+    FormatToken *Previous = Left->getPreviousNonComment();
+    if (Previous && Previous->is(tok::r_paren)) {
+      ++Contexts.back().ChainedParenCount;
+      FormatToken *OpeningParen = Left;
+      while (OpeningParen) {
+        OpeningParen->ChainedParenCount = Contexts.back().ChainedParenCount;
+        FormatToken *ClosingParen = OpeningParen->getPreviousNonComment();
+        if (ClosingParen && ClosingParen->is(tok::r_paren))
+          OpeningParen = ClosingParen->MatchingParen;
+        else
+          OpeningParen = nullptr;
+      }
+    }
     ScopedContextCreator ContextCreator(*this, tok::l_paren, 1);
 
     // FIXME: This is a bit of a hack. Do better.
@@ -994,6 +1007,7 @@ private:
     bool InInheritanceList = false;
     bool CaretFound = false;
     bool IsForEachMacro = false;
+    unsigned ChainedParenCount = 0;
   };
 
   /// \brief Puts a new \c Context onto the stack \c Contexts for the lifetime
@@ -2581,6 +2595,12 @@ bool TokenAnnotator::mustBreakBefore(const AnnotatedLine &Line,
       return true;
   }
 
+  // Break (.....)(.....)(.....) paren series more nicely.
+  if (Style.BreakChainedParenExpressions && Left.is(tok::r_paren) && Right.is(tok::l_paren)) {
+    if (Right.ChainedParenCount > 1)
+      return true;
+  }
+
   // If the last token before a '}', ']', or ')' is a comma or a trailing
   // comment, the intention is to insert a line break after it in order to make
   // shuffling around entries easier. Import statements, especially in
@@ -2874,6 +2894,7 @@ void TokenAnnotator::printDebugInfo(const AnnotatedLine &Line) {
                  << " BK=" << Tok->BlockKind
                  << " P=" << Tok->SplitPenalty << " Name=" << Tok->Tok.getName()
                  << " L=" << Tok->TotalLength << " PPK=" << Tok->PackingKind
+                 << " CPC=" << Tok->ChainedParenCount
                  << " FakeLParens=";
     for (unsigned i = 0, e = Tok->FakeLParens.size(); i != e; ++i)
       llvm::errs() << Tok->FakeLParens[i] << "/";

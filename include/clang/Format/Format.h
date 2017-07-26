@@ -372,6 +372,34 @@ struct FormatStyle {
   /// \endcode
   bool AlwaysBreakTemplateDeclarations;
 
+  /// \brief If ``true``, insert a break between closing and an opening
+  /// parentheses ``)(`` when more than two parenthesis expressions are chained.
+  ///
+  /// This syntax can appear in some abuses of C++ notation such as
+  /// Boost.ProgramOptions.
+  /// \code
+  ///   true:
+  ///   po::options_description desc("Allowed options");
+  ///   desc.add_options()
+  ///     ("help,h", "produce help message")
+  ///     ("foo", "perform the foo operation")
+  ///     ("bar", po::value<unsigned>(),
+  ///      "adjust how many bars the foo operation should frobnicate");
+  ///   auto x = MyChainedFunctor()(42);
+  ///   auto y = MyChainedFunctor()
+  ///     (42)
+  ///     (43);
+  ///
+  ///   false:
+  ///   po::options_description desc("Allowed options");
+  ///   desc.add_options()("help,h", "produce help message")("foo", "activate foo")(
+  ///     "bar", po::value<unsigned>(),
+  ///     "adjust how many bars the foo operation should frobnicate");
+  ///   auto x = MyChainedFunctor()(42);
+  ///   auto y = MyChainedFunctor()(42)(43);
+  /// \endcode
+  bool BreakChainedParenExpressions;
+
   /// \brief If ``false``, a function call's arguments will either be all on the
   /// same line or will have one line each.
   /// \code
@@ -1740,6 +1768,7 @@ struct FormatStyle {
                R.AlwaysBreakBeforeMultilineStrings &&
            AlwaysBreakTemplateDeclarations ==
                R.AlwaysBreakTemplateDeclarations &&
+           BreakChainedParenExpressions == R.BreakChainedParenExpressions &&
            BinPackArguments == R.BinPackArguments &&
            BinPackParameters == R.BinPackParameters &&
            BreakBeforeBinaryOperators == R.BreakBeforeBinaryOperators &&

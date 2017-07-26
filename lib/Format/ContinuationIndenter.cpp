@@ -813,6 +813,11 @@ unsigned ContinuationIndenter::getNewLineColumn(const LineState &State) {
   if (NextNonComment->isOneOf(TT_CtorInitializerColon, TT_InheritanceColon,
                               TT_InheritanceComma))
     return State.FirstIndent + Style.ConstructorInitializerIndentWidth;
+  // If we break between ')' and '(', apply one continuation indent.
+  if (((PreviousNonComment && PreviousNonComment->is(tok::r_paren)) ||
+       Previous.is(tok::r_paren)) &&
+      Current.is(tok::l_paren))
+    return State.Stack.back().Indent + Style.ContinuationIndentWidth;
   if (Previous.is(tok::r_paren) && !Current.isBinaryOperator() &&
       !Current.isOneOf(tok::colon, tok::comment))
     return ContinuationIndent;
