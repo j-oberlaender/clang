@@ -137,6 +137,8 @@ private:
           OpeningParen = nullptr;
       }
     }
+    else
+      Contexts.back().ChainedParenCount = 0;
     ScopedContextCreator ContextCreator(*this, tok::l_paren, 1);
 
     // FIXME: This is a bit of a hack. Do better.
